@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário com Fake Loading</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .form-container, .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 45%;
+            margin-top: 20px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-container label {
+            margin-top: 10px;
+        }
+
+        .form-container input, .form-container select {
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .form-container button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-container button:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container th, .table-container td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .table-container th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Formulário -->
+    <div class="form-container">
+        <h2>Formulário de Respostas</h2>
+        <label for="name">Nome:</label>
+        <input type="text" id="name" required>
+
+        <label for="option">Opção:</label>
+        <select id="option" required>
+            <option value="">Escolha uma opção</option>
+            <option value="opcao1">Opção 1</option>
+            <option value="opcao2">Opção 2</option>
+            <option value="opcao3">Opção 3</option>
+        </select>
+
+        <label>Escolha seu gênero:</label>
+        <label><input type="radio" name="gender" value="masculino" required> Masculino</label>
+        <label><input type="radio" name="gender" value="feminino"> Feminino</label>
+
+        <label><input type="checkbox" id="newsletter"> Quero receber novidades.</label>
+
+        <button id="submitBtn">Enviar</button>
+        <div id="loading" class="loading">Carregando...</div>
+    </div>
+
+    <!-- Tabela de Respostas -->
+    <div class="table-container">
+        <h2>Respostas Enviadas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Opção</th>
+                    <th>Gênero</th>
+                    <th>Receber Novidades</th>
+                </tr>
+            </thead>
+            <tbody id="responsesTableBody">
+                <!-- As respostas serão inseridas aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            const name = document.getElementById('name').value;
+            const option = document.getElementById('option').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+            const newsletter = document.getElementById('newsletter').checked ? "Sim" : "Não";
+
+            // Verifica se todos os campos obrigatórios estão preenchidos
+            if (!name || !option || !gender) {
+                alert("Por favor, preencha todos os campos obrigatórios.");
+                return;
+            }
+
+            // Exibe o fake loading
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+
+            setTimeout(function() {
+                // Após 3 segundos, insere a resposta na tabela
+                const tbody = document.getElementById('responsesTableBody');
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${name}</td>
+                    <td>${option}</td>
+                    <td>${gender}</td>
+                    <td>${newsletter}</td>
+                `;
+
+                // Limpa o formulário
+                document.getElementById('name').value = '';
+                document.getElementById('option').value = '';
+                document.querySelector('input[name="gender"]:checked').checked = false;
+                document.getElementById('newsletter').checked = false;
+
+                // Esconde o fake loading e habilita o botão novamente
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }, 3000); // "Fake loading" de 3 segundos
+        });
+    </script>
+
+</body>
+</html>
